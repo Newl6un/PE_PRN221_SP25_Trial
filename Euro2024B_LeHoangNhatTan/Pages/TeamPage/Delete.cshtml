@@ -1,6 +1,18 @@
 ﻿@page
 @model Euro2024B_LeHoangNhatTan.Pages.TeamPage.DeleteModel
 
+@{
+    var email = HttpContext.Session.GetString("email");
+    if (email is null)
+        Response.Redirect("/Unauthorize");
+
+    var role = HttpContext.Session.GetString("role");
+    if (role is null || (!role.Equals("1")))
+    {
+        Response.Redirect("/Unauthorize");
+    }
+
+}
 <h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>Team</h4>

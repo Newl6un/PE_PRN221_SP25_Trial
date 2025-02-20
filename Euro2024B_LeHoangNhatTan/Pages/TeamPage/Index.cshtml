@@ -1,9 +1,24 @@
 ﻿@page
 @model Euro2024B_LeHoangNhatTan.Pages.TeamPage.IndexModel
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
+@{
+    var email = HttpContext.Session.GetString("email");
+    if(email is null)
+        Response.Redirect("/Unauthorize");
+
+    var role = HttpContext.Session.GetString("role");
+    if (role is null || (!role.Equals("1") && !role.Equals("3")))
+    {
+        Response.Redirect("/Unauthorize");
+    }
+
+}
+@if(role is not null)
+{
+    <p>
+        <a asp-page="Create">Create New</a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -35,13 +50,16 @@
                 @Html.DisplayFor(modelItem => item.Position)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Group.GroupId)
+                @Html.DisplayFor(modelItem => item.Group.GroupName)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+                    @if(role.Equals("1"))
+                    {
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> 
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> 
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+             </td>
         </tr>
 }
     </tbody>

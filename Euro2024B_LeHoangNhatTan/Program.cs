@@ -14,6 +14,10 @@ builder.Services.AddDbContext<Euro2024BContext>(opt =>
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IGroupTeamRepository, GroupTeamRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddSession(opt =>
+{
+});
+
 
 var app = builder.Build();
 
@@ -31,6 +35,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapRazorPages();
 app.Run();

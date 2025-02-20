@@ -1,6 +1,17 @@
 ﻿@page
 @model Euro2024B_LeHoangNhatTan.Pages.TeamPage.CreateModel
+@{
+    var email = HttpContext.Session.GetString("email");
+    if (email is null)
+        Response.Redirect("/Unauthorize");
 
+    var role = HttpContext.Session.GetString("role");
+    if (role is null || (!role.Equals("1")))
+    {
+        Response.Redirect("/Unauthorize");
+    }
+
+}
 <h4>Team</h4>
 <hr />
 <div class="row">
