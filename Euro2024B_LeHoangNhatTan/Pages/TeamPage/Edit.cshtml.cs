@@ -2,72 +2,65 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Euro2024B_LeHoangNhatTan.DataAccessObject;
+using Euro2024B_LeHoangNhatTan.Repository;
 
 namespace Euro2024B_LeHoangNhatTan.Pages.TeamPage
 {
     public class EditModel : PageModel
     {
-        private readonly Euro2024BContext _context;
+        private readonly ITeamRepository _teamRepository;
+        private readonly IGroupTeamRepository _groupTeamRepository;
 
-        public EditModel(Euro2024BContext context)
+        public EditModel(ITeamRepository teamRepository, IGroupTeamRepository groupTeamRepository)
         {
-            _context = context;
+            _teamRepository = teamRepository;
+            _groupTeamRepository = groupTeamRepository;
         }
 
         [BindProperty]
         public Team Team { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public  IActionResult OnGetAsync(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var team =  await _context.Teams.FirstOrDefaultAsync(m => m.Id == id);
+            var team = _teamRepository.GetTeamById((int)id);
             if (team == null)
             {
                 return NotFound();
             }
             Team = team;
-           ViewData["GroupId"] = new SelectList(_context.GroupTeams, "GroupId", "GroupId");
+
+           ViewData["GroupId"] = new SelectList(_groupTeamRepository.GetGroupTeams(), "GroupId", "GroupId");
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public  IActionResult OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Team).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                _teamRepository.UpdateTeam(Team.Id, Team);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TeamExists(Team.Id))
-                {
+                if (_teamRepository.GetTeamById(Team.Id) == null)
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
-            return RedirectToPage("./Index");
-        }
 
-        private bool TeamExists(int id)
-        {
-            return _context.Teams.Any(e => e.Id == id);
+            return RedirectToPage("./Index");
         }
     }
 }

@@ -30,17 +30,17 @@ namespace Euro2024B_LeHoangNhatTan.DataAccessObject
 
         public Team? GetTeamById(int teamId)
         {
-            return _context.Teams.Where(t => t.TeamName.Equals(teamId)).FirstOrDefault();
+            return _context.Teams.Where(t => t.Id.Equals(teamId)).Include(e => e.Group).AsNoTracking().FirstOrDefault();
         }
 
         public Team? GetTeamByName(string teamName)
         {
-            return _context.Teams.Where(t => t.TeamName.Equals(teamName)).FirstOrDefault();
+            return _context.Teams.Where(t => t.TeamName.Equals(teamName)).AsNoTracking().FirstOrDefault();
         }
 
         public List<Team> GetTeams()
         {
-            return _context.Teams.ToList();
+            return _context.Teams.Include(e => e.Group).AsNoTracking().ToList();
         }
 
         public async Task CreateTeam(Team teamforCreate)

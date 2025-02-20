@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Euro2024B_LeHoangNhatTan.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Euro2024B_LeHoangNhatTan.Pages.TeamPage
 {
@@ -14,7 +15,7 @@ namespace Euro2024B_LeHoangNhatTan.Pages.TeamPage
 
         public IList<Team> Team { get;set; } = default!;
 
-        public async Task OnGetAsync()
+        public void OnGet()
         {
             Team = _teamRepository.GetTeams();
         }

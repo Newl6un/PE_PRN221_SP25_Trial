@@ -2,28 +2,30 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Euro2024B_LeHoangNhatTan.DataAccessObject;
+using Euro2024B_LeHoangNhatTan.Repository;
 
 namespace Euro2024B_LeHoangNhatTan.Pages.TeamPage
 {
     public class DetailsModel : PageModel
     {
-        private readonly Euro2024BContext _context;
+        private readonly ITeamRepository _teamRepository;
 
-        public DetailsModel(Euro2024BContext context)
+        public DetailsModel(ITeamRepository teamRepository)
         {
-            _context = context;
+            _teamRepository = teamRepository;
         }
 
         public Team Team { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public IActionResult OnGetAsync(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var team = await _context.Teams.FirstOrDefaultAsync(m => m.Id == id);
+            var team = _teamRepository.GetTeamById((int)id);
+            
             if (team == null)
             {
                 return NotFound();

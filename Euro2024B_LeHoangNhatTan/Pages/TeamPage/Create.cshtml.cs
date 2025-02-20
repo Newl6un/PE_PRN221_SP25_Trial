@@ -1,22 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Euro2024B_LeHoangNhatTan.DataAccessObject;
+using Euro2024B_LeHoangNhatTan.Repository;
+using Microsoft.AspNetCore.Components;
 
 namespace Euro2024B_LeHoangNhatTan.Pages.TeamPage
 {
     public class CreateModel : PageModel
     {
-        private readonly Euro2024BContext _context;
+        private readonly ITeamRepository _teamRepository;
+        private readonly IGroupTeamRepository _groupTeamRepository;
 
-        public CreateModel(Euro2024BContext context)
+        public CreateModel(ITeamRepository teamRepository, IGroupTeamRepository groupTeamRepository)
         {
-            _context = context;
+            _teamRepository = teamRepository;
+            _groupTeamRepository = groupTeamRepository;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["GroupId"] = new SelectList(_context.GroupTeams, "GroupId", "GroupId");
+        ViewData["GroupId"] = new SelectList(_groupTeamRepository.GetGroupTeams(), "GroupId", "GroupId");
             return Page();
         }
 
@@ -31,8 +34,7 @@ namespace Euro2024B_LeHoangNhatTan.Pages.TeamPage
                 return Page();
             }
 
-            _context.Teams.Add(Team);
-            await _context.SaveChangesAsync();
+            await _teamRepository.CreateTeam(Team);
 
             return RedirectToPage("./Index");
         }

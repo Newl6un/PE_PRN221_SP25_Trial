@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Euro2024B_LeHoangNhatTan.DataAccessObject;
 
@@ -22,8 +23,19 @@ public partial class Euro2024BContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("server=.;database=Euro2024DB; Integrated Security=true; TrustServerCertificate=true;uid=sa;pwd=sa12345");
+        optionsBuilder.UseSqlServer(GetConnectionString());
 
+    }
+
+    private string? GetConnectionString()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", true, true).Build();
+
+        var str = configuration.GetConnectionString("DbConnection");
+
+        return str;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
